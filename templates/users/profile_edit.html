@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактирование профиля — TeamFinder{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <h1>Редактировать профиль</h1>
+    <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <span class="form-error">{{ field.errors.0 }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn">Сохранить</button>
+    </form>
+</section>
+{% endblock %}

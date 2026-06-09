@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: team_finder
+      POSTGRES_USER: team_finder
+      POSTGRES_PASSWORD: team_finder
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    command: /entrypoint.sh
+    volumes:
+      - .:/app
+      - media_data:/app/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+volumes:
+  pg_data:
+  media_data:

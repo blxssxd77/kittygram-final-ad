@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.title }} — TeamFinder{% endblock %}
+
+{% block content %}
+<article class="project-detail">
+    <div class="project-detail__top">
+        <h1>{{ project.title }}</h1>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'projects:favorite' project.pk %}" class="favorite-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button type="submit" class="favorite-btn {% if is_favorite %}favorite-btn--active{% endif %}" title="Избранное">
+                ★
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="project-detail__meta">
+        <a href="{% url 'users:profile' project.author.pk %}" class="author">
+            {% if project.author.avatar %}
+                <img src="{{ project.author.avatar.url }}" alt="" class="avatar avatar--small">
+            {% else %}
+                <span class="avatar avatar--small avatar--placeholder">{{ project.author.get_initials }}</span>
+            {% endif %}
+            {{ project.author.first_name }} {{ project.author.last_name }}
+        </a>
+        <time>{{ project.created_at|date:"d.m.Y" }}</time>
+        <span class="status status--{{ project.status }}">{{ project.get_status_display }}</span>
+    </div>
+
+    <div class="project-detail__description">
+        {{ project.description|linebreaks }}
+    </div>
+
+    <div class="actions">
+        {% if user.is_authenticated and not is_owner and project.is_open and not is_participant %}
+            <form method="post" action="{% url 'projects:join' project.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn">Присоединиться к проекту</button>
+            </form>
+        {% endif %}
+
+        {% if is_owner %}
+            <a href="{% url 'projects:edit' project.pk %}" class="btn btn--outline">Редактировать проект</a>
+            {% if project.is_open %}
+            <form method="post" action="{% url 'projects:complete' project.pk %}" class="inline-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn--danger">Завершить проект</button>
+            </form>
+            {% endif %}
+        {% endif %}
+
+        <button type="button" class="btn btn--outline share-btn"
+                data-url="{{ request.build_absolute_uri }}">
+            Поделиться ссылкой
+        </button>
+    </div>
+
+    {% if is_owner %}
+    <section class="participants">
+        <h2>Участники ({{ project.participants.count }})</h2>
+        <ul class="participants-list">
+            {% for member in project.participants.all %}
+            <li>
+                <a href="{% url 'users:profile' member.pk %}">
+                    {% if member.avatar %}
+                        <img src="{{ member.avatar.url }}" alt="" class="avatar avatar--small">
+                    {% else %}
+                        <span class="avatar avatar--small avatar--placeholder">{{ member.get_initials }}</span>
+                    {% endif %}
+                    {{ member.first_name }} {{ member.last_name }}
+                </a>
+            </li>
+            {% empty %}
+            <li>Пока никто не присоединился.</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+</article>
+{% endblock %}

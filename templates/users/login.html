@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход — TeamFinder{% endblock %}
+
+{% block content %}
+<section class="form-page form-page--narrow">
+    <h1>Вход в систему</h1>
+    <form method="post" class="form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <span class="form-error">{{ field.errors.0 }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn">Войти</button>
+    </form>
+    <p class="form-footer">Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,27 @@
+<article class="card project-card">
+    <div class="project-card__header">
+        <a href="{% url 'users:profile' project.author.pk %}" class="author">
+            {% if project.author.avatar %}
+                <img src="{{ project.author.avatar.url }}" alt="" class="avatar avatar--small">
+            {% else %}
+                <span class="avatar avatar--small avatar--placeholder">{{ project.author.get_initials }}</span>
+            {% endif %}
+            <span>{{ project.author.last_name }} {{ project.author.first_name|slice:":1" }}.</span>
+        </a>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'projects:favorite' project.pk %}" class="favorite-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button type="submit" class="favorite-btn {% if project.pk in favorite_ids %}favorite-btn--active{% endif %}" title="Избранное">
+                ★
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    <h3><a href="{% url 'projects:detail' project.pk %}">{{ project.title }}</a></h3>
+    <p class="card__text">{{ project.short_description }}</p>
+    <div class="card__meta">
+        <span class="status status--{{ project.status }}">{{ project.get_status_display }}</span>
+        <time>{{ project.created_at|date:"d.m.Y" }}</time>
+    </div>
+</article>

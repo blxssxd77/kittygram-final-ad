@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Участники — TeamFinder{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1>Участники платформы</h1>
+    <p>Познакомьтесь с участниками и найдите единомышленников</p>
+</section>
+
+{% if user.is_authenticated %}
+<nav class="filters">
+    <a href="{% url 'users:list' %}" class="filter-btn {% if not active_filter %}filter-btn--active{% endif %}">Все</a>
+    <a href="?filter=favorite_authors" class="filter-btn {% if active_filter == 'favorite_authors' %}filter-btn--active{% endif %}">Авторы избранных проектов</a>
+    <a href="?filter=participating" class="filter-btn {% if active_filter == 'participating' %}filter-btn--active{% endif %}">Авторы проектов, в которых я участвую</a>
+    <a href="?filter=liked_my" class="filter-btn {% if active_filter == 'liked_my' %}filter-btn--active{% endif %}">Пользователи, которым нравятся мои проекты</a>
+    <a href="?filter=my_members" class="filter-btn {% if active_filter == 'my_members' %}filter-btn--active{% endif %}">Участники моих проектов</a>
+</nav>
+{% endif %}
+
+<div class="cards-grid cards-grid--users">
+    {% for card_user in page_obj %}
+        {% include 'includes/user_card.html' %}
+    {% empty %}
+        <p class="empty">Пользователи не найдены.</p>
+    {% endfor %}
+</div>
+
+{% include 'includes/pagination.html' %}
+
+<div id="contacts-modal" class="modal hidden">
+    <div class="modal__content">
+        <button type="button" class="modal__close" id="modal-close">×</button>
+        <h3>Контакты</h3>
+        <p id="modal-email"></p>
+        <p id="modal-phone"></p>
+        <p id="modal-github"></p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+<article class="card user-card">
+    <a href="{% url 'users:profile' card_user.pk %}" class="user-card__link">
+        {% if card_user.avatar %}
+            <img src="{{ card_user.avatar.url }}" alt="" class="avatar">
+        {% else %}
+            <span class="avatar avatar--placeholder">{{ card_user.get_initials }}</span>
+        {% endif %}
+        <h3>{{ card_user.first_name }} {{ card_user.last_name }}</h3>
+        {% if card_user.bio %}
+            <p class="card__text">{{ card_user.bio|truncatechars:80 }}</p>
+        {% endif %}
+    </a>
+    <button type="button" class="btn btn--outline btn--small contacts-btn"
+            data-email="{{ card_user.email }}"
+            data-phone="{{ card_user.phone }}"
+            data-github="{{ card_user.github }}">
+        Посмотреть контакты
+    </button>
+</article>

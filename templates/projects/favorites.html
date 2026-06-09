@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Избранное — TeamFinder{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1>Избранное</h1>
+    <p>Проекты, которые вы сохранили</p>
+</section>
+
+<div class="cards-grid">
+    {% for project in page_obj %}
+        {% include 'includes/project_card.html' %}
+    {% empty %}
+        <p class="empty">В избранном пока пусто.</p>
+    {% endfor %}
+</div>
+
+{% include 'includes/pagination.html' %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Проекты — TeamFinder{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1>Актуальные проекты</h1>
+    <p>Найдите интересный проект и присоединитесь к команде</p>
+    {% if user.is_authenticated %}
+        <a href="{% url 'projects:create' %}" class="btn">Создать проект</a>
+    {% endif %}
+</section>
+
+<div class="cards-grid">
+    {% for project in page_obj %}
+        {% include 'includes/project_card.html' %}
+    {% empty %}
+        <p class="empty">Пока нет проектов.</p>
+    {% endfor %}
+</div>
+
+{% include 'includes/pagination.html' %}
+{% endblock %}

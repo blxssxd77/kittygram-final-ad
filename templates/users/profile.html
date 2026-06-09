@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.first_name }} {{ profile_user.last_name }} — TeamFinder{% endblock %}
+
+{% block content %}
+<section class="profile">
+    <div class="profile__header">
+        {% if profile_user.avatar %}
+            <img src="{{ profile_user.avatar.url }}" alt="" class="avatar avatar--large">
+        {% else %}
+            <span class="avatar avatar--large avatar--placeholder">{{ profile_user.get_initials }}</span>
+        {% endif %}
+        <div>
+            <h1>{{ profile_user.first_name }} {{ profile_user.last_name }}</h1>
+            {% if profile_user.bio %}
+                <p class="profile__bio">{{ profile_user.bio }}</p>
+            {% endif %}
+            <div class="profile__contacts">
+                <span>Email: {{ profile_user.email }}</span>
+                {% if profile_user.phone %}<span>Телефон: {{ profile_user.phone }}</span>{% endif %}
+                {% if profile_user.github %}<span>GitHub: <a href="{{ profile_user.github }}" target="_blank">{{ profile_user.github }}</a></span>{% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if is_owner %}
+    <div class="actions">
+        <a href="{% url 'users:profile_edit' profile_user.pk %}" class="btn btn--outline">Редактировать профиль</a>
+        <a href="{% url 'projects:create' %}" class="btn">Добавить проект</a>
+        <button type="button" class="btn btn--outline share-btn"
+                data-url="{{ request.build_absolute_uri }}">
+            Поделиться профилем
+        </button>
+    </div>
+    {% endif %}
+
+    <section class="profile__projects">
+        <h2>Проекты ({{ projects.count }})</h2>
+        <div class="cards-grid">
+            {% for project in projects %}
+                {% include 'includes/project_card.html' with favorite_ids=favorite_ids %}
+            {% empty %}
+                <p class="empty">Пользователь ещё не создал проектов.</p>
+            {% endfor %}
+        </div>
+    </section>
+</section>
+{% endblock %}
